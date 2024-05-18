@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:netflix_1/screens/splash_screen.dart';
 
 
 import 'signup.dart';
@@ -23,8 +24,18 @@ class _SignInPageState extends State<SignInPage> {
     UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: emailSignin,
       password: passwordSignin,
+      
     );
+     
     print('Utilisateur connecté: ${userCredential.user?.email}');
+    _passwordController.clear();
+      _usernameController.clear();
+      username = '';
+      password = '';
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SplashScreen()),
+      );
     // Rediriger l'utilisateur vers une autre page ou effectuer d'autres actions après la connexion réussie
   } catch (e) {
     print('Erreur de connexion: $e');
@@ -37,12 +48,13 @@ class _SignInPageState extends State<SignInPage> {
   
   void _resetPassword(String emailReset) async {
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailReset);
+      if(_validateEmail(emailReset)==null){
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: emailReset);
       print("email sent");
-      _passwordController.clear();
-      _usernameController.clear();
-      username = '';
-      password = '';
+      }
+      
+     
+
     } catch (e) {
       print("erreu :$e");
     }
