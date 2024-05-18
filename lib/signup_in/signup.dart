@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -16,6 +17,32 @@ class _SignUpPageState extends State<SignUpPage> {
   String ? _emailError;
   String ?_passwordError;
   String ?_confirmPasswordError;
+
+   //
+    void _signUp(String emailRege , String passwordRege) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email:emailRege ,password: passwordRege
+      );
+      // Inscription réussie, vous pouvez rediriger l'utilisateur ou effectuer d'autres opérations
+      print('Utilisateur enregistré avec l\'ID: ${userCredential.user!.uid}');
+      _usernameController.clear();
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+      username = '';
+      password = '';
+      confirmPassword = '';
+      Navigator.pop(context);
+    } catch (error) {
+      // Gérer les erreurs d'inscription
+      print('Erreur d\'inscription: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur d\'inscription: $error')),
+      );
+    }
+  }
+
+  //
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('background1.jpg'), // Add a suitable background image in your assets
+            image: AssetImage('background.jpg'), // Add a suitable background image in your assets
             fit: BoxFit.cover,
           ),
         ),
@@ -124,13 +151,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     if (_emailError == null && _passwordError == null && _confirmPasswordError == null && password!='' && username!='' && confirmPassword!='') {
                       // Handle sign up logic here
                       print("Email: $username ,Password: $password ,Confirm Password: $confirmPassword");
-                      _usernameController.clear();
-                      _passwordController.clear();
-                      _confirmPasswordController.clear();
-                      username = '';
-                      password = '';
-                      confirmPassword = '';
-                      Navigator.pop(context);
+                      _signUp(username,password);
+                      
                     }
                   },
                   style: ElevatedButton.styleFrom(

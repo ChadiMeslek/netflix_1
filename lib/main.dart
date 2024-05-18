@@ -1,9 +1,32 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:netflix_1/screens/splash_screen.dart';
+
 import 'package:netflix_1/signup_in/signin.dart';
 
-void main() {
+void main() async{
+
+  /**
+   * const firebaseConfig = {
+  apiKey: "AIzaSyCmXj47qZ8SFkixETnBed2L10ks1oNfwak",
+  authDomain: "netflixproject-f8a88.firebaseapp.com",
+  projectId: "netflixproject-f8a88",
+  storageBucket: "netflixproject-f8a88.appspot.com",
+  messagingSenderId: "1080722281246",
+  appId: "1:1080722281246:web:77b100a0d7a6df0b77af0f"
+  };
+   */
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: "AIzaSyCmXj47qZ8SFkixETnBed2L10ks1oNfwak",
+      authDomain: "netflixproject-f8a88.firebaseapp.com",
+      projectId: "netflixproject-f8a88",
+      storageBucket: "netflixproject-f8a88.appspot.com",
+      messagingSenderId: "1080722281246",
+      appId: "1:1080722281246:web:77b100a0d7a6df0b77af0f",
+    ),
+  );
   runApp(const MyApp());
 }
 

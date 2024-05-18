@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 import 'signup.dart';
 class SignInPage extends StatefulWidget {
@@ -15,10 +17,50 @@ class _SignInPageState extends State<SignInPage> {
   String? _emailError;
   String? _passwordError;
 
+  //
+  Future<void> _signIn(String emailSignin ,String passwordSignin) async {
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: emailSignin,
+      password: passwordSignin,
+    );
+    print('Utilisateur connecté: ${userCredential.user?.email}');
+    // Rediriger l'utilisateur vers une autre page ou effectuer d'autres actions après la connexion réussie
+  } catch (e) {
+    print('Erreur de connexion: $e');
+    // Afficher un message d'erreur à l'utilisateur si nécessaire
+  }
+}
+
+
+  //
+  
+  void _resetPassword(String emailReset) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailReset);
+      print("email sent");
+      _passwordController.clear();
+      _usernameController.clear();
+      username = '';
+      password = '';
+    } catch (e) {
+      print("erreu :$e");
+    }
+  }
+
+ 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: (){
+              _resetPassword(username);
+        }
+        , icon:const Icon(Icons.lock_reset_outlined))
+        ],
         title: Container(
                   child: ClipOval(
                   child: Image.asset(
@@ -95,11 +137,9 @@ class _SignInPageState extends State<SignInPage> {
                   onPressed: () {
                     if (_emailError == null && _passwordError == null  && password!='' && username!='') {
                       // Handle sign in logic here
-                      print("username: $username ,Password: $password");
-                      _passwordController.clear();
-                      _usernameController.clear();
-                      username = '';
-                      password = '';
+                      //print("username: $username ,Password: $password");
+                      _signIn(username, password);
+                      
                       //accec authetication
                       /*Navigator.of(context).push(
                       PageRouteBuilder(
