@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_1/screens/splash_screen.dart';
+
 import 'signup.dart';
 class SignInPage extends StatefulWidget {
   @override

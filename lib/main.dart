@@ -20,11 +20,11 @@ class MyApp extends StatelessWidget {
         textTheme: const TextTheme(
           bodyLarge: TextStyle(
             color: Colors.white,
-            fontSize: 24,
+            //fontSize: 24,
           ),
           bodyMedium: TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            //fontSize: 20,
           ),
         ),
         fontFamily: GoogleFonts.ptSans().fontFamily,
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
             .copyWith(background: Colors.black),
       ),
-      home:const SplashScreen(),
+      home: SignInPage(),
     );
   }
 }
