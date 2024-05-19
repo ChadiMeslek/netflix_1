@@ -142,9 +142,11 @@ class _SignInPageState extends State<SignInPage> {
                       password = value;
                     });
                   },
+                  
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
+                  
                   
                   onPressed: () {
                     if (_emailError == null && _passwordError == null  && password!='' && username!='') {

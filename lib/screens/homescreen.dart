@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:netflix_1/model/movie_model.dart';
 import 'package:netflix_1/model/tv_series_model.dart';
 import 'package:netflix_1/screens/search_screen.dart';
 import 'package:netflix_1/services/api_services.dart';
+import 'package:netflix_1/signup_in/signin.dart';
 import 'package:netflix_1/widgets/custom_carousel.dart';
 import 'package:netflix_1/widgets/upcoming_movie_card_widget.dart';
 
@@ -61,11 +64,20 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(6),
             child: InkWell(
               onTap: () {},
-              child: Container(
-                color: Colors.blue,
-                height: 27,
-                width: 27,
-              ),
+              child: IconButton(
+                onPressed: ()async{
+                  try{
+                    await FirebaseAuth.instance.signOut();
+                    print("sign out  secces");
+                    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>  SignInPage()),
+      );
+                  }catch( e ){
+                    print("error: $e");
+                  }
+                }, 
+                icon: Icon(Icons.logout ,weight: 27, color: Colors.amber[700],),)
             ),
           ),
           const SizedBox(
