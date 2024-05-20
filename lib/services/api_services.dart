@@ -27,6 +27,19 @@ class ApiServices {
     throw Exception('failed to load upcoming movies');
   }
 
+  Future<MovieModel> getMovie(int Id) async {
+    endPoint = 'movie/' + Id.toString();
+    final url = '$baseUrl$endPoint$key';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      log('success');
+      print(response.body);
+      return MovieModel.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('failed to load upcoming movies');
+  }
+
   Future<MovieModel> getNowPlayingMovies() async {
     endPoint = 'movie/now_playing';
     final url = '$baseUrl$endPoint$key';

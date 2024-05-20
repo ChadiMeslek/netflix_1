@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix_1/screens/MyNetflixScreen.dart';
 import 'package:netflix_1/screens/homescreen.dart';
 import 'package:netflix_1/screens/new_and_hot.dart';
 import 'package:netflix_1/screens/search_screen.dart';
@@ -33,7 +34,7 @@ class BottomNavBar extends StatelessWidget {
                   width: 24,
                   height: 24,
                   child: Image(
-                    image: AssetImage('assets/green_smile.png'),
+                    image: AssetImage('assets/My Netflix.jpg'),
                   ),
                 ),
                 text: "My Netflix",
@@ -44,11 +45,12 @@ class BottomNavBar extends StatelessWidget {
             indicatorColor: Colors.transparent,
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
             HomeScreen(),
             SearchScreen(),
             MoreScreen(),
+            MyNetflixScreen(),
           ],
         ),
       ),
