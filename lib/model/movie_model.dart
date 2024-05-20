@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 class MovieModel {
-  Dates dates;
+  Dates? dates;
   int page;
   List<Result> results;
   int totalPages;
   int totalResults;
 
   MovieModel({
-    required this.dates,
+    this.dates,
     required this.page,
     required this.results,
     required this.totalPages,
@@ -21,7 +21,7 @@ class MovieModel {
   String toRawJson() => json.encode(toJson());
 
   factory MovieModel.fromJson(Map<String, dynamic> json) => MovieModel(
-        dates: Dates.fromJson(json["dates"]),
+        dates: json["dates"] != null ? Dates.fromJson(json["dates"]) : null,
         page: json["page"],
         results:
             List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
@@ -30,7 +30,7 @@ class MovieModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "dates": dates.toJson(),
+        "dates": dates?.toJson(),
         "page": page,
         "results": List<dynamic>.from(results.map((x) => x.toJson())),
         "total_pages": totalPages,

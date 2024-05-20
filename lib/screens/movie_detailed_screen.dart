@@ -37,7 +37,12 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   void shareMovie(String movieTitle) {
-    Share.share('Seen $movieTitle on Netflix yet? Watch here');
+    String netflixSearchUrl =
+        'https://www.netflix.com/search?q=${Uri.encodeComponent(movieTitle)}';
+
+    Share.share(
+      'Seen $movieTitle on Netflix yet? Watch here: $netflixSearchUrl',
+    );
   }
 
   void playTrailer(String movieTitle) async {

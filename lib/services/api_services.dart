@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:netflix_1/common/utils.dart';
+import 'package:netflix_1/model/genre_model.dart';
 import 'package:netflix_1/model/movie_detail_model.dart';
 import 'package:netflix_1/model/movie_model.dart';
 import 'package:netflix_1/model/movie_recommendation_model.dart';
@@ -100,5 +101,43 @@ class ApiServices {
       return SearchModel.fromJson(jsonDecode(response.body));
     }
     throw Exception('failed to load  search movie ');
+  }
+
+  Future<List<GenreModel>> getMovieGenres() async {
+    final url = '$baseUrl/genre/movie/list?api_key=$apiKey&language=en';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        List<GenreModel> genres = [];
+
+        for (var item in jsonData['genres']) {
+          genres.add(GenreModel.fromJson(item));
+        }
+
+        return genres;
+      } else {
+        throw Exception('Failed to load genres');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<MovieModel> getGenreMovies(int genreId) async {
+    final String endPoint = 'discover/movie';
+    final url = '$baseUrl$endPoint?api_key=$apiKey&with_genres=$genreId';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      print('success');
+      return MovieModel.fromJson(jsonDecode(response.body));
+    } else {
+      print(
+          'Failed to fetch genre movies. Status code: ${response.statusCode}, Response body: ${response.body}');
+      throw Exception('Failed to load genre movies');
+    }
   }
 }
