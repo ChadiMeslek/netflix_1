@@ -4,6 +4,7 @@ import 'package:netflix_1/common/utils.dart';
 import 'package:netflix_1/model/movie_detail_model.dart';
 import 'package:netflix_1/model/movie_recommendation_model.dart';
 import 'package:netflix_1/services/api_services.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final int movieId;
@@ -18,6 +19,7 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
 
   late Future<MovieDetailModel> movieDetail;
   late Future<MovieRecommendationsModel> movieRecommendationModel;
+  bool isRated = false; // State to track if the movie is rated
 
   @override
   void initState() {
@@ -32,20 +34,28 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
     setState(() {});
   }
 
+  void shareMovie(String movieTitle) {
+    Share.share('Seen $movieTitle on Netflix yet? Watch here: [Netflix Link]');
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    print(widget.movieId);
     return Scaffold(
       body: SingleChildScrollView(
-        child: FutureBuilder(
+        child: FutureBuilder<MovieDetailModel>(
           future: movieDetail,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final movie = snapshot.data;
-
+              final movie = snapshot.data!;
               String genresText =
-                  movie!.genres.map((genre) => genre.name).join(', ');
+                  movie.genres.map((genre) => genre.name).join(', ');
+
+              // Format runtime in hours and minutes
+              final runtime = movie.runtime;
+              final hours = runtime ~/ 60;
+              final minutes = runtime % 60;
+              final runtimeText = '${hours}h ${minutes}min';
 
               return Column(
                 children: [
@@ -54,10 +64,11 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                       Container(
                         height: size.height * 0.4,
                         decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    "$imageUrl${movie.posterPath}"),
-                                fit: BoxFit.cover)),
+                          image: DecorationImage(
+                            image: NetworkImage("$imageUrl${movie.posterPath}"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                         child: SafeArea(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,49 +109,140 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                                 color: Colors.grey,
                               ),
                             ),
-                            const SizedBox(
-                              width: 30,
+                            const SizedBox(width: 10),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Text(
+                                '13+',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
+                            const SizedBox(width: 10),
                             Text(
-                              genresText,
+                              runtimeText,
                               style: const TextStyle(
                                 color: Colors.grey,
-                                fontSize: 17,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 30,
+                        const SizedBox(height: 20),
+                        Center(
+                          child: Column(
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  // Add Play functionality here
+                                },
+                                icon: const Icon(Icons.play_arrow,
+                                    color: Colors.black),
+                                label: const Text(
+                                  'Play',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  minimumSize: Size(size.width * 0.9,
+                                      50), // Full width button
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  // Add Watch List functionality here
+                                },
+                                icon:
+                                    const Icon(Icons.add, color: Colors.white),
+                                label: const Text(
+                                  'Add to Watch List',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey,
+                                  minimumSize: Size(size.width * 0.9,
+                                      50), // Full width button
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
+                        const SizedBox(height: 20),
                         Text(
                           movie.overview,
-                          maxLines: 6,
-                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 16),
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                IconButton(
+                                  icon: Icon(
+                                    isRated
+                                        ? Icons.thumb_up_alt
+                                        : Icons.thumb_up_alt_outlined,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      isRated = !isRated;
+                                    });
+                                  },
+                                ),
+                                const Text('Rate',
+                                    style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.share,
+                                      color: Colors.white),
+                                  onPressed: () {
+                                    shareMovie(movie.title);
+                                  },
+                                ),
+                                const Text('Share',
+                                    style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  FutureBuilder(
+                  const SizedBox(height: 30),
+                  FutureBuilder<MovieRecommendationsModel>(
                     future: movieRecommendationModel,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        final movie = snapshot.data;
-
-                        return movie!.results.isEmpty
+                        final movie = snapshot.data!;
+                        return movie.results.isEmpty
                             ? const SizedBox()
                             : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
                                     "More like this",
-                                    maxLines: 6,
-                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -168,8 +270,9 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   MovieDetailScreen(
-                                                      movieId: movie
-                                                          .results[index].id),
+                                                movieId:
+                                                    movie.results[index].id,
+                                              ),
                                             ),
                                           );
                                         },
@@ -189,7 +292,7 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                 ],
               );
             }
-            return const SizedBox();
+            return const Center(child: CircularProgressIndicator());
           },
         ),
       ),
