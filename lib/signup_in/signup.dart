@@ -14,16 +14,16 @@ class _SignUpPageState extends State<SignUpPage> {
   var _passwordController = TextEditingController();
   var _confirmPasswordController = TextEditingController();
 
-  String ? _emailError;
-  String ?_passwordError;
-  String ?_confirmPasswordError;
+  String? _emailError;
+  String? _passwordError;
+  String? _confirmPasswordError;
 
-   //
-    void _signUp(String emailRege , String passwordRege) async {
+  //
+  void _signUp(String emailRege, String passwordRege) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email:emailRege ,password: passwordRege
-      );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: emailRege, password: passwordRege);
       // Inscription réussie, vous pouvez rediriger l'utilisateur ou effectuer d'autres opérations
       print('Utilisateur enregistré avec l\'ID: ${userCredential.user!.uid}');
       _usernameController.clear();
@@ -47,27 +47,23 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Container(
-                  child: ClipOval(
-                  child: Image.asset(
-                  'bb.jpg',
-                  height: 70,
-                  width: 70,
-                  fit: BoxFit.cover,
-                ),
-              ),
-          
+          child: Image.asset(
+            'white_netflix.png',
+            height: 70,
+            width: 70,
+            fit: BoxFit.cover,
+          ),
         ),
-       
-        backgroundColor: Color.fromARGB(212, 255, 39, 39),),
-
+        backgroundColor: Color.fromARGB(212, 255, 39, 39),
+      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('background.jpg'), // Add a suitable background image in your assets
+            image: AssetImage(
+                'background.jpg'), // Add a suitable background image in your assets
             fit: BoxFit.cover,
           ),
         ),
@@ -148,11 +144,16 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    if (_emailError == null && _passwordError == null && _confirmPasswordError == null && password!='' && username!='' && confirmPassword!='') {
+                    if (_emailError == null &&
+                        _passwordError == null &&
+                        _confirmPasswordError == null &&
+                        password != '' &&
+                        username != '' &&
+                        confirmPassword != '') {
                       // Handle sign up logic here
-                      print("Email: $username ,Password: $password ,Confirm Password: $confirmPassword");
-                      _signUp(username,password);
-                      
+                      print(
+                          "Email: $username ,Password: $password ,Confirm Password: $confirmPassword");
+                      _signUp(username, password);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -170,7 +171,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                   child: Text(
                     "Already have an account ? Sign In",
-                    style: TextStyle(color: Colors.white, fontFamily: 'Tw Cen MT'),
+                    style:
+                        TextStyle(color: Colors.white, fontFamily: 'Tw Cen MT'),
                   ),
                 ),
               ],

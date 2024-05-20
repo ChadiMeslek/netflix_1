@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:netflix_1/screens/splash_screen.dart';
 
-
 import 'signup.dart';
+
 class SignInPage extends StatefulWidget {
   @override
   _SignInPageState createState() => _SignInPageState();
@@ -19,48 +19,42 @@ class _SignInPageState extends State<SignInPage> {
   String? _passwordError;
 
   //
-  Future<void> _signIn(String emailSignin ,String passwordSignin) async {
-  try {
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: emailSignin,
-      password: passwordSignin,
-      
-    );
-     
-    print('Utilisateur connecté: ${userCredential.user?.email}');
-    _passwordController.clear();
+  Future<void> _signIn(String emailSignin, String passwordSignin) async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailSignin,
+        password: passwordSignin,
+      );
+
+      print('Utilisateur connecté: ${userCredential.user?.email}');
+      _passwordController.clear();
       _usernameController.clear();
       username = '';
       password = '';
-    Navigator.push(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const SplashScreen()),
       );
-    // Rediriger l'utilisateur vers une autre page ou effectuer d'autres actions après la connexion réussie
-  } catch (e) {
-    print('Erreur de connexion: $e');
-    // Afficher un message d'erreur à l'utilisateur si nécessaire
+      // Rediriger l'utilisateur vers une autre page ou effectuer d'autres actions après la connexion réussie
+    } catch (e) {
+      print('Erreur de connexion: $e');
+      // Afficher un message d'erreur à l'utilisateur si nécessaire
+    }
   }
-}
-
 
   //
-  
+
   void _resetPassword(String emailReset) async {
     try {
-      if(_validateEmail(emailReset)==null){
+      if (_validateEmail(emailReset) == null) {
         await FirebaseAuth.instance.sendPasswordResetEmail(email: emailReset);
-      print("email sent");
+        print("email sent");
       }
-      
-     
-
     } catch (e) {
       print("erreu :$e");
     }
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -68,28 +62,28 @@ class _SignInPageState extends State<SignInPage> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: (){
-              _resetPassword(username);
-        }
-        , icon:const Icon(Icons.lock_reset_outlined))
+              onPressed: () {
+                _resetPassword(username);
+              },
+              icon: const Icon(Icons.lock_reset_outlined))
         ],
         title: Container(
-                  child: ClipOval(
-                  child: Image.asset(
-                  'bb.jpg',
-                  height: 70,
-                  width: 70,
-                  fit: BoxFit.cover,
-                ),
-              ),
-          
+          child: ClipOval(
+            child: Image.asset(
+              'white_netflix.png',
+              height: 70,
+              width: 70,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
-       
-        backgroundColor: Color.fromARGB(212, 255, 39, 39),),
+        backgroundColor: Color.fromARGB(211, 216, 31, 31),
+      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('netflex.jpg'), // Add a suitable background image in your assets
+            image: AssetImage(
+                'netflex.jpg'), // Add a suitable background image in your assets
             fit: BoxFit.cover,
           ),
         ),
@@ -101,7 +95,11 @@ class _SignInPageState extends State<SignInPage> {
               children: [
                 Text(
                   'Sign In',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.red, fontFamily: 'Jokerman'),
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      fontFamily: 'Jokerman'),
                 ),
                 SizedBox(height: 20),
                 TextField(
@@ -132,7 +130,6 @@ class _SignInPageState extends State<SignInPage> {
                     fillColor: Colors.white.withOpacity(0.1),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      
                     ),
                     errorText: _passwordError,
                   ),
@@ -142,18 +139,18 @@ class _SignInPageState extends State<SignInPage> {
                       password = value;
                     });
                   },
-                  
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  
-                  
                   onPressed: () {
-                    if (_emailError == null && _passwordError == null  && password!='' && username!='') {
+                    if (_emailError == null &&
+                        _passwordError == null &&
+                        password != '' &&
+                        username != '') {
                       // Handle sign in logic here
                       //print("username: $username ,Password: $password");
                       _signIn(username, password);
-                      
+
                       //accec authetication
                       /*Navigator.of(context).push(
                       PageRouteBuilder(
@@ -167,8 +164,6 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                     );*/
                       //
-
-                      
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -196,7 +191,10 @@ class _SignInPageState extends State<SignInPage> {
                   },
                   child: Text(
                     "Don't have an account ? Sign Up",
-                    style: TextStyle(color: Colors.white, fontFamily: 'Tw Cen MT', ),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Tw Cen MT',
+                    ),
                   ),
                 ),
               ],

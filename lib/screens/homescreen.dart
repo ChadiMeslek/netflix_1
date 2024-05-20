@@ -42,43 +42,29 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 120,
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SearchScreen(),
-                  ),
-                );
-              },
-              child: const Icon(
-                Icons.search,
-                size: 30,
-                color: Colors.white,
-              ),
-            ),
-          ),
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: InkWell(
-              onTap: () {},
-              child: IconButton(
-                onPressed: ()async{
-                  try{
-                    await FirebaseAuth.instance.signOut();
-                    print("sign out  secces");
-                    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) =>  SignInPage()),
-      );
-                  }catch( e ){
-                    print("error: $e");
-                  }
-                }, 
-                icon: Icon(Icons.logout ,weight: 27, color: Colors.amber[700],),)
-            ),
+                onTap: () {},
+                child: IconButton(
+                  onPressed: () async {
+                    try {
+                      await FirebaseAuth.instance.signOut();
+                      print("sign out  secces");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignInPage()),
+                      );
+                    } catch (e) {
+                      print("error: $e");
+                    }
+                  },
+                  icon: Icon(
+                    Icons.logout,
+                    weight: 27,
+                    color: Colors.amber[700],
+                  ),
+                )),
           ),
           const SizedBox(
             width: 20,
