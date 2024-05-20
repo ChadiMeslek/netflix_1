@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () async {
                     try {
                       await FirebaseAuth.instance.signOut();
-                      print("sign out  secces");
+                      print("sign out successfuly");
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => SignInPage()),

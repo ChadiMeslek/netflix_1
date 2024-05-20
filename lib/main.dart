@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
             .copyWith(background: Colors.black),
       ),
-      home: SignInPage(),
+      home: const SplashScreen(),
     );
   }
 }

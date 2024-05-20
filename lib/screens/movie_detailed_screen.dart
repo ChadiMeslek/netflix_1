@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:netflix_1/common/utils.dart';
 import 'package:netflix_1/model/movie_detail_model.dart';
 import 'package:netflix_1/model/movie_recommendation_model.dart';
+import 'package:netflix_1/screens/MyNetflixScreen.dart';
 import 'package:netflix_1/services/api_services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -195,6 +196,8 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                               ElevatedButton.icon(
                                 onPressed: () {
                                   // Add Watch List functionality here
+                                  MyNetflixScreen.addToWatchList(
+                                      movie.posterPath);
                                 },
                                 icon:
                                     const Icon(Icons.add, color: Colors.white),
