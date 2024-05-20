@@ -183,7 +183,7 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                                 ],
                               );
                       }
-                      return const Text("Something Went wrong");
+                      return const Text("");
                     },
                   ),
                 ],

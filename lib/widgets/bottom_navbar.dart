@@ -9,7 +9,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         bottomNavigationBar: Container(
           color: Colors.black,
@@ -27,6 +27,16 @@ class BottomNavBar extends StatelessWidget {
               Tab(
                 icon: Icon(Icons.photo_library_outlined),
                 text: "New & Hot",
+              ),
+              Tab(
+                icon: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Image(
+                    image: AssetImage('assets/green_smile.png'),
+                  ),
+                ),
+                text: "My Netflix",
               ),
             ],
             unselectedLabelColor: Color(0xFF999999),

@@ -1,11 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:netflix_1/screens/homescreen.dart';
+import 'package:netflix_1/screens/splash_screen.dart';
 
 import 'package:netflix_1/signup_in/signin.dart';
 
-void main() async{
-
+void main() async {
   /**
    * const firebaseConfig = {
   apiKey: "AIzaSyCmXj47qZ8SFkixETnBed2L10ks1oNfwak",
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
             .copyWith(background: Colors.black),
       ),
-      home: SignInPage(),
+      home: const SplashScreen(),
     );
   }
 }
