@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:netflix_1/common/utils.dart';
 import 'package:netflix_1/model/movie_detail_model.dart';
 import 'package:netflix_1/model/movie_recommendation_model.dart';
 import 'package:netflix_1/services/api_services.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final int movieId;
@@ -35,7 +37,21 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   void shareMovie(String movieTitle) {
-    Share.share('Seen $movieTitle on Netflix yet? Watch here: [Netflix Link]');
+    Share.share('Seen $movieTitle on Netflix yet? Watch here');
+  }
+
+  void playTrailer(String movieTitle) async {
+    // Construct the YouTube search URL for the movie trailer
+    String searchQuery = '${movieTitle} official trailer';
+    String url =
+        'https://www.youtube.com/results?search_query=${Uri.encodeComponent(searchQuery)}';
+
+    // Launch the URL
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -133,6 +149,25 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                                 color: Colors.grey,
                               ),
                             ),
+                            const SizedBox(width: 10),
+                            RatingBarIndicator(
+                              rating: movie.voteAverage /
+                                  2, // Convert to 5-star scale
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              itemCount: 5,
+                              itemSize: 20.0,
+                              direction: Axis.horizontal,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              '${movie.voteAverage}/10',
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 20),
@@ -140,9 +175,7 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                           child: Column(
                             children: [
                               ElevatedButton.icon(
-                                onPressed: () {
-                                  // Add Play functionality here
-                                },
+                                onPressed: () => playTrailer(movie.title),
                                 icon: const Icon(Icons.play_arrow,
                                     color: Colors.black),
                                 label: const Text(
