@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:netflix_1/common/utils.dart';
-import 'package:netflix_1/screens/search_screen.dart';
+import 'package:netflix_1/screens/movie_detailed_screen.dart';
 
 class MyNetflixScreen extends StatefulWidget {
   @override
   _MyNetflixHomePageState createState() => _MyNetflixHomePageState();
-  static List<String> watchLaterMovies = [];
-  static void addToWatchList(String movie) {
+  static List<Map<String, dynamic>> watchLaterMovies = [];
+
+  static void addToWatchList(Map<String, dynamic> movie) {
     MyNetflixScreen.watchLaterMovies.add(movie);
+  }
+
+  static void removeFromWatchList(int movieId) {
+    MyNetflixScreen.watchLaterMovies
+        .removeWhere((movie) => movie['id'] == movieId);
+  }
+
+  static bool isMovieInWatchList(int movieId) {
+    return MyNetflixScreen.watchLaterMovies
+        .any((movie) => movie['id'] == movieId);
   }
 }
 
@@ -89,10 +100,23 @@ class _MyNetflixHomePageState extends State<MyNetflixScreen> {
                 scrollDirection: Axis.horizontal,
                 itemCount: MyNetflixScreen.watchLaterMovies.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    child: Image.network(
-                      '$imageUrl${MyNetflixScreen.watchLaterMovies[index]}',
-                      fit: BoxFit.fitHeight,
+                  final movie = MyNetflixScreen.watchLaterMovies[index];
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetailScreen(
+                            movieId: movie['id'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      child: Image.network(
+                        '$imageUrl${movie['posterPath']}',
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
                   );
                 },

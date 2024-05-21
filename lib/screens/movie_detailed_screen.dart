@@ -7,6 +7,7 @@ import 'package:netflix_1/model/movie_recommendation_model.dart';
 import 'package:netflix_1/screens/MyNetflixScreen.dart';
 import 'package:netflix_1/services/api_services.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MovieDetailScreen extends StatefulWidget {
@@ -22,11 +23,12 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
 
   late Future<MovieDetailModel> movieDetail;
   late Future<MovieRecommendationsModel> movieRecommendationModel;
-  bool isRated = false; // State to track if the movie is rated
+  bool isLiked = false; // State to track if the movie is rated
 
   @override
   void initState() {
     fetchInitialData();
+    loadLikedState();
     super.initState();
   }
 
@@ -35,6 +37,52 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
     movieRecommendationModel =
         apiServices.getMovieRecommendations(widget.movieId);
     setState(() {});
+  }
+
+  void addToWatchList(int movieId, String moviePosterPath) {
+    MyNetflixScreen.addToWatchList({
+      'id': movieId,
+      'posterPath': moviePosterPath,
+    });
+
+    // Show SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Added to watch list'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    setState(() {}); // Refresh the UI
+  }
+
+  void saveLikedState(bool liked) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('${widget.movieId}_isLiked', liked);
+  }
+
+  // Load liked state
+  void loadLikedState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLiked = prefs.getBool('${widget.movieId}_isLiked') ?? false;
+    });
+  }
+
+  void removeFromWatchList(int movieId) {
+    MyNetflixScreen.removeFromWatchList(movieId);
+
+    // Show SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Removed from watch list'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.red,
+      ),
+    );
+
+    setState(() {}); // Refresh the UI
   }
 
   void shareMovie(String movieTitle) {
@@ -78,6 +126,8 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
               final hours = runtime ~/ 60;
               final minutes = runtime % 60;
               final runtimeText = '${hours}h ${minutes}min';
+
+              bool isInWatchList = MyNetflixScreen.isMovieInWatchList(movie.id);
 
               return Column(
                 children: [
@@ -200,21 +250,29 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                               const SizedBox(height: 10),
                               ElevatedButton.icon(
                                 onPressed: () {
-                                  // Add Watch List functionality here
-                                  MyNetflixScreen.addToWatchList(
-                                      movie.posterPath);
+                                  if (isInWatchList) {
+                                    removeFromWatchList(movie.id);
+                                  } else {
+                                    addToWatchList(movie.id, movie.posterPath);
+                                  }
                                 },
-                                icon:
-                                    const Icon(Icons.add, color: Colors.white),
-                                label: const Text(
-                                  'Add to Watch List',
-                                  style: TextStyle(
+                                icon: Icon(
+                                  isInWatchList ? Icons.check : Icons.add,
+                                  color: Colors.white,
+                                ),
+                                label: Text(
+                                  isInWatchList
+                                      ? 'Added to Watch List'
+                                      : 'Add to Watch List',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey,
+                                  backgroundColor: isInWatchList
+                                      ? Colors.green
+                                      : Colors.grey,
                                   minimumSize: Size(size.width * 0.9,
                                       50), // Full width button
                                 ),
@@ -238,19 +296,23 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                               children: [
                                 IconButton(
                                   icon: Icon(
-                                    isRated
-                                        ? Icons.thumb_up_alt
-                                        : Icons.thumb_up_alt_outlined,
-                                    color: Colors.white,
+                                    isLiked
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: Colors.red,
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      isRated = !isRated;
+                                      isLiked = !isLiked;
+                                      saveLikedState(
+                                          isLiked); // Save liked state
                                     });
                                   },
                                 ),
-                                const Text('Rate',
-                                    style: TextStyle(color: Colors.white)),
+                                Text(
+                                  'Like',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ],
                             ),
                             Column(
